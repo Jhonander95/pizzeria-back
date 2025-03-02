@@ -2,7 +2,7 @@ package config
 
 import (
 	"log"
-	//"pizzeria-api/models"  Importa los modelos
+	"pizzeria-api/models"
 
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
@@ -19,11 +19,11 @@ func ConnectDatabase() {
 
 	DB = database
 
-	/*  Migrar las tablas
-	err = DB.AutoMigrate(&models.Product{}, &models.Order{})
+	// Migrar las tablas
+	err = DB.AutoMigrate(&models.Product{}, &models.Order{}, &models.OrderProduct{})
 	if err != nil {
 		log.Fatal("Error al migrar la base de datos:", err)
 	}
 
-	log.Println("Base de datos conectada y migrada exitosamente") */
+	log.Println("Base de datos conectada y migrada exitosamente")
 }

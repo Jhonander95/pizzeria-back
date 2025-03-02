@@ -10,5 +10,6 @@ func OrderRoutes(router *gin.Engine) {
 	orders := router.Group("/orders")
 	{
 		orders.POST("", controllers.CreateOrder)
+		orders.GET("", controllers.GetOrders)
 	}
 }
