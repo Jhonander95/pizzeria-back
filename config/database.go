@@ -20,7 +20,7 @@ func ConnectDatabase() {
 	DB = database
 
 	// Migrar las tablas
-	err = DB.AutoMigrate(&models.Product{}, &models.Order{}, &models.OrderProduct{})
+	err = DB.AutoMigrate(&models.Product{}, &models.Order{}, &models.OrderProduct{}, &models.User{})
 	if err != nil {
 		log.Fatal("Error al migrar la base de datos:", err)
 	}

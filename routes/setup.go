@@ -1,28 +1,53 @@
 package routes
 
 import (
+	"pizzeria-api/controllers"
 	"pizzeria-api/middleware"
 
 	"github.com/gin-gonic/gin"
 )
 
 func SetupRouter() *gin.Engine {
-	router := gin.New() // En lugar de gin.Default()
+	router := gin.New()
 	router.RedirectTrailingSlash = false
 	router.Use(gin.Logger())
 	router.Use(gin.Recovery())
 
-	// Usa la configuración de desarrollo durante la fase de desarrollo
+	// Configuración CORS
 	router.Use(middleware.CORSMiddleware(middleware.DevelopmentCORSConfig()))
 
-	// Cuando vayas a producción, cambia a:
-	// router.Use(middleware.CORSMiddleware(middleware.ProductionCORSConfig([]string{"https://tudominio.com"})))
-
-	// Registrar las rutas de productos
-	ProductRoutes(router)
-
-	// Registrar las rutas de pedidos
-	OrderRoutes(router)
+	// Configurar todas las rutas aquí
+	setupRoutes(router)
 
 	return router
+}
+
+func setupRoutes(router *gin.Engine) {
+	// Rutas públicas
+	publicProducts := router.Group("/products")
+	{
+		publicProducts.GET("", controllers.ListProducts)
+	}
+
+	orders := router.Group("/orders")
+	{
+		orders.POST("", controllers.CreateOrder)
+		orders.GET("", controllers.GetOrders)
+	}
+
+	// Rutas de autenticación
+	auth := router.Group("/auth")
+	{
+		auth.POST("/register", controllers.Register)
+		auth.POST("/login", controllers.Login)
+	}
+
+	// Rutas protegidas de administración
+	admin := router.Group("/admin")
+	admin.Use(middleware.AuthMiddleware())
+	{
+		admin.POST("/products", controllers.AddProduct)
+		admin.PUT("/products/:id", controllers.EditProduct)
+		admin.DELETE("/products/:id", controllers.DeleteProduct)
+	}
 }
